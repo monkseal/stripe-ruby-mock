@@ -12,7 +12,7 @@ This gem has unexpectedly grown in popularity and I've gotten pretty busy, so I'
 
 In your gemfile:
 
-    gem 'stripe-ruby-mock', '~> 2.1.1', :require => 'stripe_mock'
+    gem 'stripe-ruby-mock', '~> 2.2.0', :require => 'stripe_mock'
 
 ## Features
 
@@ -23,7 +23,7 @@ In your gemfile:
 
 ### Specifications
 
-**STRIPE API TARGET VERSION:** 2015-02-18 (master)
+**STRIPE API TARGET VERSION:** 2015-09-08 (master)
 
 Older API version branches:
 
@@ -127,7 +127,7 @@ Here is an example of setting up your RSpec (3.x) test suite to run live with th
 ```ruby
 # RSpec 3.x
 RSpec.configure do |c|
-  if config.filter_manager.inclusions.rules.include?(:live)
+  if c.filter_manager.inclusions.rules.include?(:live)
     StripeMock.toggle_live(true)
     puts "Running **live** tests against Stripe..."
   end
@@ -342,8 +342,8 @@ assign card data to a generated card token:
 it "generates a stripe card token" do
   card_token = StripeMock.generate_card_token(last4: "9191", exp_year: 1984)
 
-  cus = Stripe::Customer.create(card: card_token)
-  card = cus.cards.data.first
+  cus = Stripe::Customer.create(source: card_token)
+  card = cus.sources.data.first
   expect(card.last4).to eq("9191")
   expect(card.exp_year).to eq(1984)
 end

@@ -15,7 +15,7 @@ module StripeMock
       def generate_card_token(card_params={})
         card_data = { :number => "4242424242424242", :exp_month => 9, :exp_year => 2018, :cvc => "999" }
         card = StripeMock::Util.card_merge(card_data, card_params)
-        card[:fingerprint] = StripeMock::Util.fingerprint(card[:number])
+        card[:fingerprint] = StripeMock::Util.fingerprint(card[:number]) if StripeMock.state == 'local'
 
         stripe_token = Stripe::Token.create(:card => card)
         stripe_token.id
@@ -51,6 +51,10 @@ module StripeMock
       def delete_all_coupons
         coupons = Stripe::Coupon.all
         coupons.data.map(&:delete) if coupons.data.count > 0
+      end
+
+      def prepare_card_error
+        StripeMock.prepare_card_error(:card_error, :new_customer) if StripeMock.state == 'local'
       end
     end
   end
